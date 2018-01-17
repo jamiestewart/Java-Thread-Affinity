@@ -36,45 +36,69 @@ public abstract class AbstractAffinityImplTest {
 
 
     @Test
-    public void getAffinityCompletesGracefully() throws Exception {
-        getImpl().getAffinity();
+    public void getAffinityCompletesGracefully() throws Throwable {
+        try {
+            getImpl().getAffinity();
+        } catch (Throwable err) {
+            err.printStackTrace();
+            throw err;
+        }
     }
 
     @Test
-    public void getAffinityReturnsValidValue() throws Exception {
-        final long affinity = getImpl().getAffinity();
-        assertTrue(
-                "Affinity mask " + affinity + " must be >0",
-                affinity > 0
-        );
-        final int allCoresMask = (1 << CORES) - 1;
-        assertTrue(
-                "Affinity mask " + affinity + " must be <=(2^" + CORES + "-1 = " + allCoresMask + ")",
-                affinity <= allCoresMask
-        );
+    public void getAffinityReturnsValidValue() throws Throwable {
+        try {
+            final long affinity = getImpl().getAffinity();
+            assertTrue(
+                    "Affinity mask " + affinity + " must be >0",
+                    affinity > 0
+            );
+            final long allCoresMask = (1L << CORES) - 1;
+            assertTrue(
+                    "Affinity mask " + affinity + " must be <=(2^" + CORES + "-1 = " + allCoresMask + ")",
+                    affinity <= allCoresMask
+            );
+        } catch (Throwable err) {
+            err.printStackTrace();
+            throw err;
+        }
     }
 
     @Test
-    public void setAffinityCompletesGracefully() throws Exception {
-        getImpl().setAffinity(1);
+    public void setAffinityCompletesGracefully() throws Throwable {
+        try {
+            getImpl().setAffinity(1);
+        } catch (Throwable err) {
+            err.printStackTrace();
+            throw err;
+        }
     }
 
     @Test
-    public void getAffinityReturnsValuePreviouslySet() throws Exception {
-        final IAffinity impl = getImpl();
-        final int cores = CORES;
-        for (int core = 0; core < cores; core++) {
-            final long mask = (1 << core);
-            getAffinityReturnsValuePreviouslySet(impl, mask);
+    public void getAffinityReturnsValuePreviouslySet() throws Throwable {
+        try {
+            final IAffinity impl = getImpl();
+            final long cores = CORES;
+            for (long core = 0; core < cores; core++) {
+                final long mask = (1L << core);
+                getAffinityReturnsValuePreviouslySet(impl, mask);
+            }
+        } catch (Throwable err) {
+            err.printStackTrace();
+            throw err;
         }
     }
 
     private void getAffinityReturnsValuePreviouslySet(final IAffinity impl,
-                                                      final long mask) throws Exception {
-
-        impl.setAffinity(mask);
-        final long _mask = impl.getAffinity();
-        assertEquals(mask, _mask);
+                                                      final long mask) throws Throwable {
+        try {
+            impl.setAffinity(mask);
+            final long _mask = impl.getAffinity();
+            assertEquals(mask, _mask);
+        } catch (Throwable err) {
+            err.printStackTrace();
+            throw err;
+        }
     }
 
     @After

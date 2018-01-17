@@ -35,23 +35,24 @@ public enum NativeAffinity implements IAffinity {
     public static final boolean LOADED;
     private static final Logger LOGGER = Logger.getLogger(NativeAffinity.class
             .getName());
+    private static final int PROCESSORS = Runtime.getRuntime().availableProcessors();
 
     static {
         LOADED = loadAffinityNativeLibrary();
     }
 
-    private native static long getAffinity0();
+    private native static long getAffinity0(final int cpuCount);
 
-    private native static void setAffinity0(long affinity);
+    private native static void setAffinity0(final int cpuCount, final long affinity);
 
     @Override
     public long getAffinity() {
-        return getAffinity0();
+        return getAffinity0(PROCESSORS);
     }
 
     @Override
     public void setAffinity(long affinity) {
-        setAffinity0(affinity);
+        setAffinity0(PROCESSORS, affinity);
     }
 
     private static boolean initialize() {
@@ -99,8 +100,13 @@ public enum NativeAffinity implements IAffinity {
     private static boolean extractAndLoadLibraryFile(
             String libFolderForCurrentOS, String libraryFileName,
             String targetFolder) {
-        String nativeLibraryFilePath = libFolderForCurrentOS + "/"
-                + libraryFileName;
+        
+        String nativeLibraryFilePath = "/" + libraryFileName;
+        if (NativeAffinity.class.getResource(nativeLibraryFilePath) == null) {
+            nativeLibraryFilePath = libFolderForCurrentOS + "/"
+                    + libraryFileName;
+        }
+        
         final String prefix = "javaaffinity-" + getVersion() + "-";
 
         String extractedLibFileName = prefix + libraryFileName;
@@ -193,7 +199,7 @@ public enum NativeAffinity implements IAffinity {
         String affinityNativeLibraryName = System.mapLibraryName("affinity");
 
         // Load the os-dependent library from a jar file
-        String affinityNativeLibraryPath = "/com/higherfrequencytrading/java/affinity/native/"
+        String affinityNativeLibraryPath = "/com/higherfrequencytrading/affinity/native/"
                 + getNativeLibFolderPathForCurrentOS();
 
         if (NativeAffinity.class.getResource(affinityNativeLibraryPath

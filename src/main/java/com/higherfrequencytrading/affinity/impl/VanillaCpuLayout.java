@@ -36,6 +36,7 @@ public class VanillaCpuLayout implements CpuLayout {
 
     VanillaCpuLayout(List<CpuInfo> cpuDetails) {
         this.cpuDetails = cpuDetails;
+ //       Collections.sort(cpuDetails);
         SortedSet<Integer> sockets = new TreeSet<Integer>(),
                 cores = new TreeSet<Integer>(),
                 threads = new TreeSet<Integer>();
@@ -200,7 +201,7 @@ public class VanillaCpuLayout implements CpuLayout {
         return result;
     }
 
-    static class CpuInfo {
+    static class CpuInfo implements Comparable<CpuInfo>{
         int socketId, coreId, threadId;
 
         CpuInfo() {
@@ -241,6 +242,21 @@ public class VanillaCpuLayout implements CpuLayout {
             result = 31 * result + coreId;
             result = 31 * result + threadId;
             return result;
+        }
+
+        @Override
+        public int compareTo(CpuInfo other) {
+            Integer socket = socketId;
+            int compare = socket.compareTo(other.socketId);
+            if (compare == 0) {
+                Integer core = coreId;
+                compare = core.compareTo(other.coreId);
+                if (compare == 0) {
+                    Integer thread = threadId;
+                    compare = thread.compareTo(other.threadId);
+                }
+            }
+            return compare;
         }
     }
 }

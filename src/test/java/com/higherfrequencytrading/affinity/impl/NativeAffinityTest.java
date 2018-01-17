@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 public class NativeAffinityTest extends AbstractAffinityImplTest {
     @BeforeClass
     public static void checkJniLibraryPresent() {
+        System.out.println("Native == " + NativeAffinity.LOADED);
         Assume.assumeTrue(NativeAffinity.LOADED);
     }
 

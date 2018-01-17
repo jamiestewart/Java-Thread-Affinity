@@ -30,14 +30,19 @@ import static junit.framework.Assert.assertEquals;
 public class JNIBusyWaitingTest {
     @Test
     public void testPause() {
-        if (!Platform.isLinux()) return;
+        try {
+            if (!Platform.isLinux()) return;
 
-        int runs = 2000000;
-        long start = System.nanoTime();
-        for (int i = 0; i < runs; i++)
-            JNIBusyWaiting.INSTANCE.pause();
-        long time = System.nanoTime() - start;
-        System.out.printf("The average time to pause was %.1f ns%n", (double) time / runs);
+            int runs = 2000000;
+            long start = System.nanoTime();
+            for (int i = 0; i < runs; i++)
+                JNIBusyWaiting.INSTANCE.pause();
+            long time = System.nanoTime() - start;
+            System.out.printf("The average time to pause was %.1f ns%n", (double) time / runs);
+        } catch (UnsatisfiedLinkError err) {
+            System.err.println("java.library.path = " + System.getProperty("java.library.path"));
+            throw err;
+        }
     }
 
     @Test

@@ -20,17 +20,58 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.higherfrequencytrading</groupId>
+    <groupId>com.higherfrequencytrading.OTC-branch</groupId>
     <artifactId>affinity</artifactId>
-    <version>1.7</version>
+    <version>1.9.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Java Thread Affinity</name>
     <description>Thread Affinity library for Java</description>
+    <organization>
+        <name>OTC Markets Inc.</name>
+        <url>http://otcmarkets.com</url>
+    </organization>
 
     <properties>
         <native.source.dir>src/main/c</native.source.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
+    <scm>
+        <connection>scm:git:git@github.com:OTCMarketsGroup/Java-Thread-Affinity.git</connection>
+        <url>scm:git:git@github.com:OTCMarketsGroup/Java-Thread-Affinity.git</url>
+        <developerConnection>scm:git:git@github.com:OTCMarketsGroup/Java-Thread-Affinity.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>Jira</system>
+        <url>http://jira.ps/browse/TREX/</url>
+    </issueManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Internal Releases</name>
+			<url>http://devtools.ps:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://devtools.ps:8081/nexus/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+	<repositories>
+		<repository>
+			<id>otcmarkets repo</id>
+			<url>http://devtools.ps:8081/nexus/content/groups/public</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
     <dependencies>
         <!-- on linux install with sudo apt-get install libjna-java -->
@@ -206,23 +247,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <configuration>
-                    <passphrase>${gpg.passphrase}</passphrase>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -243,10 +267,4 @@
         </developer>
     </developers>
 
-    <scm>
-        <connection>scm:git:https://github.com/peter-lawrey/Java-Thread-Affinity.git</connection>
-        <developerConnection>scm:git:https://github.com/peter-lawrey/Java-Thread-Affinity.git
-        </developerConnection>
-        <url>https://github.com/peter-lawrey/Java-Thread-Affinity</url>
-    </scm>
 </project>

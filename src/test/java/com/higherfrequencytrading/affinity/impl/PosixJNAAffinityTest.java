@@ -17,6 +17,7 @@
 package com.higherfrequencytrading.affinity.impl;
 
 import com.higherfrequencytrading.affinity.IAffinity;
+
 import org.junit.Assume;
 import org.junit.BeforeClass;
 
@@ -26,6 +27,8 @@ import org.junit.BeforeClass;
 public class PosixJNAAffinityTest extends AbstractAffinityImplTest {
     @BeforeClass
     public static void checkJniLibraryPresent() {
+        // POSIX is not working
+//        Assume.assumeTrue(false);
         Assume.assumeTrue(PosixJNAAffinity.LOADED);
     }
 

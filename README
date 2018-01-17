@@ -2,7 +2,23 @@
 
 https://www.ohloh.net/p/Java-Thread-Affinity
 
+
+[ To Build ]
+On a Linux host:
+mvn -U -PUnix clean deploy
+
+[ OTC Development ]
+OTC Markets has made a branch of this project for our changes.
+The OTC Markets branch of this project is called "otcmarkets".
+The Master branch of this project (other than the one commit to update this README) reflects the project as pulled from peter.lawrey.
+
 [ Version History ]
+
+
+1.9.0.0-Branched from  https://www.ohloh.net/p/Java-Thread-Affinity, made our own
+    <groupId>com.higherfrequencytrading.OTC-branch</groupId>
+    <artifactId>affinity</artifactId>
+
 
 Version 1.6.3 - Added AffinityLock.isAllocated() and isBound() so you can check whether a CPU could be allocated.
 

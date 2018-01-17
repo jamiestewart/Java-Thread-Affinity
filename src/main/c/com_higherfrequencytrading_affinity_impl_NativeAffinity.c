@@ -20,20 +20,26 @@
 #include "com_higherfrequencytrading_affinity_impl_NativeAffinity.h"
 #include "com_higherfrequencytrading_busywaiting_impl_JNIBusyWaiting.h"
 #include "com_higherfrequencytrading_clock_impl_JNIClock.h"
+
 /*
  * Class:     com_higherfrequencytrading_affinity_impl_NativeAffinity
  * Method:    getAffinity0
- * Signature: ()J
+ * Signature: (I)J
  */
 JNIEXPORT jlong JNICALL Java_com_higherfrequencytrading_affinity_impl_NativeAffinity_getAffinity0
-  (JNIEnv *env, jclass c) {
-    cpu_set_t mask;
-    int ret = sched_getaffinity(0, sizeof(mask), &mask);
+  (JNIEnv *env, jclass c, jint cpuCount) {
+    cpu_set_t *mask = CPU_ALLOC(cpuCount);
+    const size_t size = CPU_ALLOC_SIZE(cpuCount);
+    if (NULL == mask) {
+        perror("CPU_ALLOC");
+    }
+    int ret = sched_getaffinity(0, size, mask);
     if (ret < 0) return ~0LL;
     long long mask2 = 0, i;
     for(i=0;i<sizeof(mask2)*8;i++)
-        if (CPU_ISSET(i, &mask))
+        if (CPU_ISSET_S(i, size, mask))
             mask2 |= 1L << i;
+    CPU_FREE(mask);
     return (jlong) mask2;
 }
 
@@ -43,14 +49,19 @@ JNIEXPORT jlong JNICALL Java_com_higherfrequencytrading_affinity_impl_NativeAffi
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_com_higherfrequencytrading_affinity_impl_NativeAffinity_setAffinity0
-  (JNIEnv *env, jclass c, jlong affinity) {
+  (JNIEnv *env, jclass c, jint cpuCount, jlong affinity) {
     int i;
-    cpu_set_t mask;
-    CPU_ZERO(&mask);
+    cpu_set_t *mask = CPU_ALLOC(cpuCount);
+    const size_t size = CPU_ALLOC_SIZE(cpuCount);
+    if (NULL == mask) {
+        perror("CPU_ALLOC");
+    }
+    CPU_ZERO_S(size, mask);
     for(i=0;i<sizeof(affinity)*8;i++)
         if ((affinity >> i) & 1)
-            CPU_SET(i, &mask);
-    sched_setaffinity(0, sizeof(mask), &mask);
+            CPU_SET_S(i, size, mask);
+    sched_setaffinity(0, size, mask);
+    CPU_FREE(mask);
 }
 
 #if defined(__i386__)

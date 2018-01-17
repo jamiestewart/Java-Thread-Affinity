@@ -17,15 +17,19 @@
 package com.higherfrequencytrading.affinity;
 
 import com.higherfrequencytrading.affinity.impl.VanillaCpuLayout;
+
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author peter.lawrey
@@ -110,6 +114,63 @@ public class AffinityLockTest {
         locks[1].assignedThread.interrupt();
     }
 
+    @Test
+    public void verifyCoresAreAvalable() throws IOException {
+        final AffinityLock[] locks = AffinityLock.LOCKS;
+        System.out.println("There are " + locks.length + " locks");
+        int reservableCount = 0;
+        for (AffinityLock lock : locks) {
+            if (lock.canReserve()) {
+                System.out.println("Can reserve " + lock);
+                reservableCount++;
+            } else {
+                System.out.println("Cannot reserve " + lock);
+            }
+        }
+        assertTrue(reservableCount > 0);
+    }
+    
+    @Test
+    public void testComputeLocks() throws IOException {
+        final CpuLayout cpuLayout = VanillaCpuLayout.fromCpuInfo();
+        final AffinityLock[] locks = new AffinityLock[cpuLayout.cpus()];
+        final TreeMap<Integer, AffinityLock[]> cores = new TreeMap<Integer, AffinityLock[]>();
+        AffinityLock.computeLocks(cpuLayout, locks, cores);
+        System.out.println(toString(locks));
+        System.out.println(toString(cores));
+        assertTrue(true);
+    }
+    
+    protected static String toString(AffinityLock[] locks) {
+        final StringBuilder sb = new StringBuilder();
+        for (AffinityLock lock : locks) {
+            if (sb.length() == 0) {
+                sb.append('[');
+            } else {
+                sb.append(", ");
+            }
+            sb.append(lock);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+    
+    protected static String toString(Map<Integer, AffinityLock[]> cores) {
+        final StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, AffinityLock[]> entry : cores.entrySet()) {
+            if (sb.length() == 0) {
+                sb.append('{');
+            } else {
+                sb.append(",\n ");
+            }
+            sb.append(entry.getKey()).append(" -> ").append(toString(entry.getValue()));
+        }
+        sb.append('}');
+        return sb.toString();
+    }
+    
+    
+    
     @Test
     public void assignReleaseThread() throws IOException {
         if (AffinityLock.RESERVED_AFFINITY == 0) {

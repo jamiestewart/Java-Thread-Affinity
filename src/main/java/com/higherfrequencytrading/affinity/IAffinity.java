@@ -24,6 +24,10 @@ package com.higherfrequencytrading.affinity;
  */
 public interface IAffinity {
     /**
+     * @see http://www.linux.com/learn/docs/man/2473-cpualloc3
+     *      for details on the number of hosts.
+     *      
+     * @param cpuCount number of CPUs on the host
      * @return returns affinity mask for current thread
      */
     public long getAffinity();

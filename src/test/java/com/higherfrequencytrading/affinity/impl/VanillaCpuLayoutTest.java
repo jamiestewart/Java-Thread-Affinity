@@ -41,6 +41,12 @@ public class VanillaCpuLayoutTest {
                 "6: CpuInfo{socketId=0, coreId=2, threadId=1}\n" +
                 "7: CpuInfo{socketId=0, coreId=3, threadId=1}\n", vcl.toString());
     }
+    
+    @Test
+    public void testFromCpuInfo() throws IOException {
+        VanillaCpuLayout layout = VanillaCpuLayout.fromCpuInfo();
+        System.out.println(layout);
+    }
 
 
     @Test
